@@ -3,6 +3,6 @@ prefix=/home/tamizhanban/Documents/SRIP/devel
 Name: beginner_tutorials
 Description: Description of beginner_tutorials
 Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
+Cflags: -I/home/tamizhanban/Documents/SRIP/devel/include -I/home/tamizhanban/Documents/SRIP/src/beginner_tutorials/include
+Libs: -L${prefix}/lib -lbeginner_tutorials
+Requires: roscpp rospy std_msgs message_runtime
