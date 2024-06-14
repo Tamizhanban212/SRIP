@@ -132,6 +132,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/tamizhanban/Documents/SRIP/build/gtest/cmake_install.cmake")
   include("/home/tamizhanban/Documents/SRIP/build/beginner_tutorials/cmake_install.cmake")
+  include("/home/tamizhanban/Documents/SRIP/build/learning_tf2/cmake_install.cmake")
 
 endif()
 

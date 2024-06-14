@@ -1,2 +1,2 @@
-beginner_tutorials
+beginner_tutorials:learning_tf2
 -DCATKIN_DEVEL_PREFIX=/home/tamizhanban/Documents/SRIP/devel -DCMAKE_INSTALL_PREFIX=/home/tamizhanban/Documents/SRIP/install -G Unix Makefiles
