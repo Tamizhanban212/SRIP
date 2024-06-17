@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: open_manipulator_description
+    relative_path: urdf/open_manipulator_robot.urdf.xacro
+    xacro_args: hand:=true
+  SRDF:
+    relative_path: config/open_manipulator.srdf
+  CONFIG:
+    author_name: Tamizhanban
+    author_email: tamizhanbanag@gmail.com
+    generated_timestamp: 1718633301

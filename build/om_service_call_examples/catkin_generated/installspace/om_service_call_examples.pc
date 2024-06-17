@@ -1,0 +1,8 @@
+prefix=/home/tamizhanban/Documents/SRIP/install
+
+Name: om_service_call_examples
+Description: Description of om_service_call_examples
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
