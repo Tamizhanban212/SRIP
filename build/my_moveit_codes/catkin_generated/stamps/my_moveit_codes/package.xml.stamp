@@ -56,6 +56,10 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>open_manipulator_msgs</build_depend>
   <build_depend>tf</build_depend>
+  <build_depend>cv2</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>urdf_parser_py</build_depend>
+  <build_depend>track_ik_python</build_depend>
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>moveit_commander</build_export_depend>
   <build_export_depend>roscpp</build_export_depend>
@@ -63,6 +67,10 @@
   <build_export_depend>std_msgs</build_export_depend>
   <build_export_depend>open_manipulator_msgs</build_export_depend>
   <build_export_depend>tf</build_export_depend>
+  <build_export_depend>cv2</build_export_depend>
+  <build_export_depend>sensor_msgs</build_export_depend>
+  <build_export_depend>urdf_parser_py</build_export_depend>
+  <build_export_depend>track_ik_python</build_export_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>moveit_commander</exec_depend>
   <exec_depend>roscpp</exec_depend>
@@ -70,6 +78,10 @@
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>open_manipulator_msgs</exec_depend>
   <exec_depend>tf</exec_depend>
+  <exec_depend>cv2</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>urdf_parser_py</exec_depend>
+  <exec_depend>track_ik_python</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

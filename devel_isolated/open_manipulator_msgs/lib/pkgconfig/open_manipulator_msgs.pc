@@ -1,0 +1,8 @@
+prefix=/home/tamizhanban/Documents/SRIP/devel_isolated/open_manipulator_msgs
+
+Name: open_manipulator_msgs
+Description: Description of open_manipulator_msgs
+Version: 1.0.1
+Cflags: -I/home/tamizhanban/Documents/SRIP/devel_isolated/open_manipulator_msgs/include
+Libs: -L${prefix}/lib 
+Requires: std_msgs geometry_msgs message_runtime

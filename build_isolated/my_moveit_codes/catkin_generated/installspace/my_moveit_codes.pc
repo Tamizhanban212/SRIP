@@ -1,0 +1,8 @@
+prefix=/home/tamizhanban/Documents/SRIP/install_isolated
+
+Name: my_moveit_codes
+Description: Description of my_moveit_codes
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

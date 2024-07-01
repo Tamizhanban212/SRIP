@@ -24,6 +24,7 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/home/tamizhanban/Documents/SRIP/src/moveit_tutorials/doc/interactivity/include"
+  "/home/tamizhanban/Documents/SRIP/src/kdl_parser/kdl_parser/include"
   "/opt/ros/noetic/include"
   "/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp"
   "/usr/include/eigen3"
@@ -39,6 +40,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
   "/home/tamizhanban/Documents/SRIP/build/gtest/googletest/CMakeFiles/gtest.dir/DependInfo.cmake"
+  "/home/tamizhanban/Documents/SRIP/build/kdl_parser/kdl_parser/CMakeFiles/kdl_parser.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.
