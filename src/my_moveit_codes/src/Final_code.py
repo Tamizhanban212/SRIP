@@ -9,12 +9,14 @@ import math
 import matplotlib.pyplot as plt
 import time
 from sensor_msgs.msg import JointState
+from open_manipulator_msgs.msg import KinematicsPose
 from kdl_parser_py.urdf import treeFromParam
 import PyKDL
 from scipy.signal import savgol_filter
 
-# Global variables to store force readings and timestamps
+# Global variables to store force readings, position readings, and timestamps
 force_readings = []
+position_readings = []
 timestamps = []
 
 def euler_to_quaternion(roll, pitch, yaw):
@@ -102,12 +104,14 @@ def joint_state_callback(msg):
     F = J_T_pseudo @ T
     force_readings.append(F.flatten())
     timestamps.append(time.time())
+    
+def kinematics_pose_callback(msg):
+    position = msg.pose.position
+    position_readings.append({'x': position.x, 'y': position.y, 'z': position.z})
 
 def send_pose(poses):
-    rospy.init_node('pose_gripper_control_node')
     rospy.wait_for_service('/goal_task_space_path')
     set_pose = rospy.ServiceProxy('/goal_task_space_path', SetKinematicsPose)
-    rospy.Subscriber("/joint_states", JointState, joint_state_callback)
     start_time = time.time()
     for pose in poses:
         try:
@@ -123,29 +127,56 @@ def send_pose(poses):
     end_time = time.time()
     rospy.sleep(0.01 * (len(timestamps) - (end_time - start_time) / 0.01))
 
-def plot_forces(apply_filter=False):
+def plot_forces_and_positions(apply_filter=False):
     start_time = timestamps[0]
     relative_time = [t - start_time for t in timestamps]
     Fx = [f[0] for f in force_readings]
     Fy = [f[1] for f in force_readings]
     Fz = [f[2] for f in force_readings]
 
+    # Ensure that the number of position readings matches the number of force readings
+    if len(position_readings) > len(force_readings):
+        position_readings[:] = position_readings[:len(force_readings)]
+    elif len(position_readings) < len(force_readings):
+        position_readings.extend([position_readings[-1]] * (len(force_readings) - len(position_readings)))
+    
+    x_positions = [p['x'] for p in position_readings]
+    y_positions = [p['y'] for p in position_readings]
+    z_positions = [p['z'] for p in position_readings]
+
     if apply_filter:
         Fx = savgol_filter(Fx, 51, 3)  # window size 51, polynomial order 3
         Fy = savgol_filter(Fy, 51, 3)
         Fz = savgol_filter(Fz, 51, 3)
+        x_positions = savgol_filter(x_positions, 51, 3)
+        y_positions = savgol_filter(y_positions, 51, 3)
+        z_positions = savgol_filter(z_positions, 51, 3)
 
-    plt.figure()
-    plt.plot(relative_time, Fx, label='Fx')
-    plt.plot(relative_time, Fy, label='Fy')
-    plt.plot(relative_time, Fz, label='Fz')
+    plt.figure(1)
+    plt.plot(relative_time, Fx, label='Fx', color='r')
+    plt.plot(relative_time, Fy, label='Fy', color='black')
+    plt.plot(relative_time, Fz, label='Fz', color='b')
     plt.xlabel('Time (s)')
     plt.ylabel('Force (N)')
-    plt.title('Force vs Time')
+    plt.title('Force Components vs Time')
     plt.legend()
+
+    plt.figure(2)
+    plt.plot(relative_time, x_positions, label='x', color='r')
+    plt.plot(relative_time, y_positions, label='y', color='black')
+    plt.plot(relative_time, z_positions, label='z', color='b')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Position (m)')
+    plt.title('Position Components vs Time')
+    plt.legend()
+
     plt.show()
 
 if __name__ == "__main__":
+    rospy.init_node('pose_gripper_control_node')
+    rospy.Subscriber("/joint_states", JointState, joint_state_callback)
+    rospy.Subscriber("/gripper/kinematics_pose", KinematicsPose, kinematics_pose_callback)
+    
     x_new_mean, y_new_mean = detect_circles_and_transform()
     if x_new_mean is not None and y_new_mean is not None:
         poses = [
@@ -156,6 +187,7 @@ if __name__ == "__main__":
             Pose(position=Point(0.05, 0.0, 0.25), orientation=euler_to_quaternion(0, 0, 0))
         ]
         send_pose(poses)
-        plot_forces(apply_filter=False)  # Set to True to apply the filter
+        rospy.sleep(0.01 * (len(timestamps) - (time.time() - timestamps[0]) / 0.01))
+        plot_forces_and_positions(apply_filter=True)  # Set to True to apply the filter
     else:
         rospy.logerr("No circles detected or no readings obtained.")
