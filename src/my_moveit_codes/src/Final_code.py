@@ -14,9 +14,10 @@ from kdl_parser_py.urdf import treeFromParam
 import PyKDL
 from scipy.signal import savgol_filter
 
-# Global variables to store force readings, position readings, and timestamps
+# Global variables to store force readings, position readings, torque readings, and timestamps
 force_readings = []
 position_readings = []
+torque_readings = []
 timestamps = []
 
 def euler_to_quaternion(roll, pitch, yaw):
@@ -103,6 +104,7 @@ def joint_state_callback(msg):
     J_T_pseudo = Vt.T @ sigma_inv @ U.T
     F = J_T_pseudo @ T
     force_readings.append(F.flatten())
+    torque_readings.append(torques)
     timestamps.append(time.time())
     
 def kinematics_pose_callback(msg):
@@ -127,22 +129,32 @@ def send_pose(poses):
     end_time = time.time()
     rospy.sleep(0.01 * (len(timestamps) - (end_time - start_time) / 0.01))
 
-def plot_forces_and_positions(apply_filter=False):
+def plot_data(apply_filter=False):
     start_time = timestamps[0]
     relative_time = [t - start_time for t in timestamps]
+
+    # Forces
     Fx = [f[0] for f in force_readings]
     Fy = [f[1] for f in force_readings]
     Fz = [f[2] for f in force_readings]
 
     # Ensure that the number of position readings matches the number of force readings
-    if len(position_readings) > len(force_readings):
-        position_readings[:] = position_readings[:len(force_readings)]
-    elif len(position_readings) < len(force_readings):
-        position_readings.extend([position_readings[-1]] * (len(force_readings) - len(position_readings)))
-    
+    min_length = min(len(force_readings), len(position_readings), len(torque_readings))
+    force_readings[:] = force_readings[:min_length]
+    position_readings[:] = position_readings[:min_length]
+    torque_readings[:] = torque_readings[:min_length]
+    relative_time[:] = relative_time[:min_length]
+
+    # Positions
     x_positions = [p['x'] for p in position_readings]
     y_positions = [p['y'] for p in position_readings]
     z_positions = [p['z'] for p in position_readings]
+
+    # Torques
+    torque1 = [t[0] for t in torque_readings]
+    torque2 = [t[1] for t in torque_readings]
+    torque3 = [t[2] for t in torque_readings]
+    torque4 = [t[3] for t in torque_readings]
 
     if apply_filter:
         Fx = savgol_filter(Fx, 51, 3)  # window size 51, polynomial order 3
@@ -151,6 +163,10 @@ def plot_forces_and_positions(apply_filter=False):
         x_positions = savgol_filter(x_positions, 51, 3)
         y_positions = savgol_filter(y_positions, 51, 3)
         z_positions = savgol_filter(z_positions, 51, 3)
+        torque1 = savgol_filter(torque1, 51, 3)
+        torque2 = savgol_filter(torque2, 51, 3)
+        torque3 = savgol_filter(torque3, 51, 3)
+        torque4 = savgol_filter(torque4, 51, 3)
 
     plt.figure(1)
     plt.plot(relative_time, Fx, label='Fx', color='r')
@@ -168,6 +184,16 @@ def plot_forces_and_positions(apply_filter=False):
     plt.xlabel('Time (s)')
     plt.ylabel('Position (m)')
     plt.title('Position Components vs Time')
+    plt.legend()
+
+    plt.figure(3)
+    plt.plot(relative_time, torque1, label='Torque 1', color='r')
+    plt.plot(relative_time, torque2, label='Torque 2', color='black')
+    plt.plot(relative_time, torque3, label='Torque 3', color='b')
+    plt.plot(relative_time, torque4, label='Torque 4', color='g')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Torque (Nm)')
+    plt.title('Torque Components vs Time')
     plt.legend()
 
     plt.show()
@@ -188,6 +214,6 @@ if __name__ == "__main__":
         ]
         send_pose(poses)
         rospy.sleep(0.01 * (len(timestamps) - (time.time() - timestamps[0]) / 0.01))
-        plot_forces_and_positions(apply_filter=True)  # Set to True to apply the filter
+        plot_data(apply_filter=True)  # Set to True to apply the filter
     else:
         rospy.logerr("No circles detected or no readings obtained.")
