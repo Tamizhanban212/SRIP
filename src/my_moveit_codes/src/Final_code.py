@@ -190,7 +190,7 @@ def plot_data(apply_filter=False):
     plt.plot(relative_time, torque1, label='Torque 1', color='r')
     plt.plot(relative_time, torque2, label='Torque 2', color='black')
     plt.plot(relative_time, torque3, label='Torque 3', color='b')
-    plt.plot(relative_time, torque4, label='Torque 4', color='g')
+    plt.plot(relative_time, torque4, label='Torque 4', color='#FFDA22')
     plt.xlabel('Time (s)')
     plt.ylabel('Torque (Nm)')
     plt.title('Torque Components vs Time')
