@@ -3,7 +3,7 @@ import cv2
 # Function to detect circular disks and display transformed coordinates
 def detect_and_display():
     # Open webcam
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(0)
     
     while True:
         # Capture frame-by-frame

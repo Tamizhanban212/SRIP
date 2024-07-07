@@ -38,7 +38,7 @@ def control_gripper(position):
         rospy.logerr("Service call failed: %s", e)
 
 def detect_circles_and_transform():
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     
